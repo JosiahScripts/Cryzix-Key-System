@@ -1,145 +1,91 @@
-<!DOCTYPE html><html lang="en">
+
+<!DOCTYPE html>
+<html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Cryzix Key Generator</title>
+  <title>Cryzix Key System</title>
   <style>
     body {
-      background: linear-gradient(to right, #0f2027, #203a43, #2c5364);
-      color: #fff;
-      font-family: 'Segoe UI', sans-serif;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      height: 100vh;
-      margin: 0;
+      font-family: Arial, sans-serif;
+      background: #0a0a0a;
+      color: white;
       text-align: center;
-    }
-    h1 {
-      font-size: 2.5em;
-      margin-bottom: 10px;
+      padding: 50px;
     }
     button {
-      background-color: #00bfff;
+      padding: 12px 20px;
+      font-size: 16px;
       border: none;
-      padding: 15px 30px;
-      font-size: 1.2em;
-      color: #fff;
-      border-radius: 10px;
+      border-radius: 6px;
+      background-color: #1e90ff;
+      color: white;
       cursor: pointer;
-      transition: background 0.3s;
-      margin: 10px;
     }
-    button:hover {
-      background-color: #009acd;
+    button:disabled {
+      background-color: gray;
+      cursor: not-allowed;
     }
     #key {
       margin-top: 20px;
-      font-size: 1.5em;
-      word-wrap: break-word;
-      max-width: 90%;
-    }
-    #message {
-      margin-top: 10px;
-      font-size: 1em;
-      color: #90ee90;
-    }
-    #instruction {
-      margin: 30px 0 10px 0;
-      font-size: 1.2em;
-    }
-    #timer {
-      font-size: 1.1em;
-      margin-top: 10px;
-      color: #ffa;
+      font-size: 18px;
+      background: #222;
+      padding: 10px;
+      border-radius: 5px;
+      display: none;
     }
   </style>
 </head>
 <body>
-  <h1>Cryzix Key Generator</h1>
-  <p id="instruction">COMPLETE THE ACTIONS FIRST TO ACCESS</p>
-  <a id="unlockLink" href="https://lootdest.org/s?1FX4g8Lw" target="_blank"><button>Unlock Access</button></a>  <div id="genSection" style="display:none;">
-    <div id="timer"></div>
-    <button id="generateBtn" onclick="generateKey()" disabled>Generate Key</button>
-    <button onclick="copyKey()">Copy Key</button>
-    <div id="key">Your key will appear here</div>
-    <div id="message"></div>
-  </div>  <script>
-    let currentKey = "";
-    let expiration = null;
-    let timerInterval;
 
-    function completeAction() {
-      if (!localStorage.getItem("unlocked")) {
-        localStorage.setItem("unlocked", Date.now());
-      }
-      document.getElementById("genSection").style.display = "block";
-      document.getElementById("instruction").textContent = "Access granted. Please wait 2 minutes before generating a key.";
-      startCooldown();
-    }
+  <h2>Complete the actions first to access</h2>
+  <p>PLEASE DO THE FOLLOWING TO ACCESS</p>
 
-    function startCooldown() {
-      const unlockTime = parseInt(localStorage.getItem("unlocked"), 10);
-      const cooldown = 2 * 60 * 1000;
-      const targetTime = unlockTime + cooldown;
+  <a id="unlockLink" href="https://lootdest.org/s?EgMb9orv" target="_blank">
+    <button>Unlock Access</button>
+  </a>
 
-      timerInterval = setInterval(() => {
-        const now = Date.now();
-        const remaining = targetTime - now;
+  <br><br>
 
-        if (remaining <= 0) {
-          clearInterval(timerInterval);
-          document.getElementById("generateBtn").disabled = false;
-          document.getElementById("timer").textContent = "You can now generate a key.";
-        } else {
-          const seconds = Math.floor((remaining % (1000 * 60)) / 1000);
-          const minutes = Math.floor((remaining / (1000 * 60)));
-          document.getElementById("timer").textContent = `Wait: ${minutes}m ${seconds}s`;
-        }
-      }, 1000);
-    }
+  <button id="generateBtn" disabled>Click to generate key</button>
+  <p id="timerText" style="display:none;">Please wait <span id="countdown">10</span> seconds...</p>
 
-    function hashKey(key) {
-      let hash = 0;
-      for (let i = 0; i < key.length; i++) {
-        hash = (hash << 5) - hash + key.charCodeAt(i);
-        hash |= 0;
-      }
-      return Math.abs(hash).toString(16).toUpperCase();
-    }
+  <div id="key">Your Key: <span id="keyText"></span></div>
 
-    function generateKey() {
-      const prefix = "Cryzix-";
-      const chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
-      let code = "";
-      for (let i = 0; i < 16; i++) {
-        code += chars.charAt(Math.floor(Math.random() * chars.length));
-      }
-      const hash = hashKey(code);
-      currentKey = prefix + code + "#" + hash;
+  <script>
+    const unlockBtn = document.getElementById("unlockLink");
+    const generateBtn = document.getElementById("generateBtn");
+    const countdownText = document.getElementById("timerText");
+    const countdown = document.getElementById("countdown");
+    const keyBox = document.getElementById("key");
+    const keyText = document.getElementById("keyText");
 
-      expiration = new Date(Date.now() + 2 * 24 * 60 * 60 * 1000);
-
-      document.getElementById("key").textContent = currentKey + " (Expires: " + expiration.toDateString() + ")";
-      document.getElementById("message").textContent = "";
-    }
-
-    function copyKey() {
-      if (!currentKey) {
-        document.getElementById("message").textContent = "Please generate a key first.";
-        return;
-      }
-      navigator.clipboard.writeText(currentKey).then(() => {
-        document.getElementById("message").textContent = "Link successfully copied!";
-      }, () => {
-        document.getElementById("message").textContent = "Failed to copy key.";
-      });
-    }
-
-    window.addEventListener("focus", () => {
-      if (!localStorage.getItem("unlocked")) {
-        completeAction();
+    window.addEventListener('focus', () => {
+      if (!localStorage.getItem("visited")) {
+        localStorage.setItem("visited", "true");
+        generateBtn.disabled = false;
       }
     });
-  </script></body>
-    </html>
+
+    generateBtn.onclick = () => {
+      let time = 10;
+      countdown.textContent = time;
+      countdownText.style.display = "block";
+      generateBtn.disabled = true;
+
+      const interval = setInterval(() => {
+        time--;
+        countdown.textContent = time;
+        if (time <= 0) {
+          clearInterval(interval);
+          const randomKey = "Cryzix-" + Math.random().toString(36).substring(2, 10).toUpperCase();
+          keyText.textContent = randomKey;
+          keyBox.style.display = "block";
+          navigator.clipboard.writeText(randomKey);
+          alert("Link successfully copied!");
+        }
+      }, 1000);
+    };
+  </script>
+
+</body>
+</html>
