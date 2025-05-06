@@ -1,182 +1,104 @@
-<!-- index.html --><!DOCTYPE html><html lang="en">
+<!DOCTYPE html>
+<html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Cryzix Key System</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>hi cutie :)</title>
   <style>
-    body {
-      background: #0f0f0f;
-      font-family: 'Segoe UI', sans-serif;
+    html, body {
+      margin: 0;
+      padding: 0;
+      height: 100%;
+      overflow: hidden;
+      background: url('https://i.pinimg.com/736x/3d/3b/0e/3d3b0e6e5c3e6e5e3e5e3e5e3e5e3e5e.jpg') no-repeat center center fixed;
+      background-size: cover;
+      font-family: 'Comic Sans MS', cursive, sans-serif;
       color: white;
       display: flex;
-      flex-direction: column;
-      align-items: center;
       justify-content: center;
-      height: 100vh;
-      margin: 0;
-      padding: 20px;
+      align-items: center;
       text-align: center;
     }
+
+    .bubble {
+      background: rgba(255, 192, 203, 0.85);
+      padding: 25px;
+      border-radius: 20px;
+      box-shadow: 0 0 20px hotpink;
+      max-width: 90%;
+      width: 400px;
+      animation: float 3s ease-in-out infinite;
+    }
+
     h1 {
-      color: #00bcd4;
+      font-size: 26px;
+      color: hotpink;
+      text-shadow: 0 0 5px red;
     }
-    .btn {
-      background-color: red;
-      border: none;
-      padding: 15px 30px;
-      font-size: 16px;
-      margin: 10px;
-      border-radius: 8px;
-      cursor: pointer;
-      color: white;
-      transition: background 0.3s;
-    }
-    .btn.completed {
-      background-color: green !important;
-    }
-    #notification {
-      background: #ff4444;
-      padding: 10px;
-      margin-top: 20px;
-      display: none;
-      border-radius: 5px;
-    }
-  </style>
-</head>
-<body>
-  <h1>CRYZIX KEY SYSTEM</h1>
-  <button id="btn1" class="btn">SUBSCRIBE TO CHANNEL 1</button>
-  <button id="btn2" class="btn">SUBSCRIBE TO CHANNEL 2</button>
-  <div id="notification">PLEASE DON'T BYPASS IT. TRY AGAIN</div>
-  <script>
-    const btn1 = document.getElementById("btn1");
-    const btn2 = document.getElementById("btn2");
-    const notif = document.getElementById("notification");function delayCheck(btnKey, btnEl) {
-  const openedAt = Date.now();
-  window.addEventListener("focus", () => {
-    const timeAway = Date.now() - openedAt;
-    if (timeAway < 3000) {
-      notif.style.display = "block";
-      setTimeout(() => notif.style.display = "none", 3000);
-    } else {
-      localStorage.setItem(btnKey, "done");
-      btnEl.classList.add("completed");
-      checkProgress();
-    }
-  }, { once: true });
-}
 
-btn1.onclick = () => {
-  window.open("http://www.youtube.com/@skibidipoplol", "_blank");
-  delayCheck("step1", btn1);
-};
-
-btn2.onclick = () => {
-  window.open("http://www.youtube.com/@JosiahScripts", "_blank");
-  delayCheck("step2", btn2);
-};
-
-function checkProgress() {
-  const step1 = localStorage.getItem("step1");
-  const step2 = localStorage.getItem("step2");
-
-  if (step1 === "done") btn1.classList.add("completed");
-  if (step2 === "done") btn2.classList.add("completed");
-
-  if (step1 === "done" && step2 === "done") {
-    window.location.href = "key.html";
-  }
-}
-
-checkProgress();
-
-  </script>
-</body>
-</html><!-- key.html --><!DOCTYPE html><html lang="en">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Cryzix Key Display</title>
-  <style>
-    body {
-      background: #0f0f0f;
-      font-family: 'Segoe UI', sans-serif;
-      color: white;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      height: 100vh;
-      margin: 0;
-      padding: 20px;
-      text-align: center;
-    }
-    h1 {
-      color: #00bcd4;
-    }
-    #keyBox {
-      margin-top: 30px;
-      background: #1f1f1f;
-      padding: 20px;
-      border-radius: 10px;
-    }
-    #countdown {
+    p {
+      font-size: 18px;
       margin-top: 10px;
-      font-size: 16px;
-      color: #00ffcc;
+      min-height: 40px;
+    }
+
+    @keyframes float {
+      0% { transform: translateY(0); }
+      50% { transform: translateY(-10px); }
+      100% { transform: translateY(0); }
+    }
+
+    .heart {
+      font-size: 22px;
+      color: hotpink;
+      animation: pulse 1.2s infinite;
+      margin-top: 15px;
+    }
+
+    @keyframes pulse {
+      0%, 100% { transform: scale(1); }
+      50% { transform: scale(1.2); }
+    }
+
+    /* Typing Effect */
+    .typewriter::after {
+      content: '';
+      display: inline-block;
+      width: 1ch;
+      background-color: white;
+      animation: blink 1s step-end infinite;
+    }
+
+    @keyframes blink {
+      0%, 100% { background: transparent; }
+      50% { background: white; }
     }
   </style>
 </head>
 <body>
-  <h1>Your Cryzix Key</h1>
-  <div id="keyBox">
-    <p>Your Key:</p>
-    <strong id="keyDisplay"></strong>
-    <div id="countdown"></div>
+  <div class="bubble">
+    <h1>hey cutie...</h1>
+    <p id="typewriter" class="typewriter"></p>
+    <div class="heart">♥</div>
   </div>
+
+  <!-- Floating Hearts JS -->
   <script>
-    const keyDisplay = document.getElementById("keyDisplay");
-    const countdownDisplay = document.getElementById("countdown");function generateKey() {
-  const part = () => Math.random().toString(36).substring(2, 8).toUpperCase();
-  return `Cryzix-${part()}${part()}`;
-}
-
-function startCountdown() {
-  const expireTime = parseInt(localStorage.getItem("keyExpire"));
-  function updateCountdown() {
-    const now = Date.now();
-    const diff = expireTime - now;
-    if (diff <= 0) {
-      localStorage.clear();
-      alert("Your key has expired.");
-      window.location.href = "index.html";
-      return;
+    const msg = "sorry I logged your IP address... because I wanna kiss you :(";
+    let i = 0;
+    function type() {
+      if (i < msg.length) {
+        document.getElementById("typewriter").textContent += msg.charAt(i);
+        i++;
+        setTimeout(type, 60);
+      }
     }
-    const hours = Math.floor(diff / (1000 * 60 * 60));
-    const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
-    const seconds = Math.floor((diff % (1000 * 60)) / 1000);
-    countdownDisplay.textContent = `Key Expires In: ${hours}h ${minutes}m ${seconds}s`;
-  }
-  updateCountdown();
-  setInterval(updateCountdown, 1000);
-}
-
-function initializeKey() {
-  let savedKey = localStorage.getItem("cryzixKey");
-  let expire = localStorage.getItem("keyExpire");
-  if (!savedKey || !expire) {
-    const key = generateKey();
-    const expireTime = Date.now() + 48 * 60 * 60 * 1000;
-    localStorage.setItem("cryzixKey", key);
-    localStorage.setItem("keyExpire", expireTime.toString());
-    savedKey = key;
-  }
-  keyDisplay.textContent = savedKey;
-  startCountdown();
-}
-
-initializeKey();
-
+    type();
   </script>
+
+  <!-- Optional background music -->
+  <audio autoplay loop hidden>
+    <source src="https://cdn.pixabay.com/download/audio/2023/02/28/audio_4f0fc3a5df.mp3?filename=romantic-stroll-139582.mp3" type="audio/mpeg">
+  </audio>
 </body>
 </html>
