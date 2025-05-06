@@ -1,172 +1,151 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Cryzix Key System</title>
-  <style>
-    body {
-      background-color: #0d0d0d;
-      color: white;
-      font-family: Arial, sans-serif;
-      text-align: center;
-      padding: 40px;
-    }
-    .button {
-      display: block;
-      width: 300px;
-      margin: 20px auto;
-      padding: 15px;
-      background-color: #ff4d4d;
-      border: none;
-      color: white;
-      font-size: 18px;
-      cursor: pointer;
-      border-radius: 6px;
-      box-shadow: 0 0 15px #ff4d4d;
-      transition: 0.3s;
-    }
-    .button.completed {
-      background-color: #28a745;
-      box-shadow: 0 0 15px #28a745;
-    }
-    .key-box {
-      margin-top: 40px;
-      padding: 15px;
-      background: #1a1a1a;
-      border: 1px solid #444;
-      border-radius: 8px;
-      display: inline-block;
-    }
-    #countdown {
-      font-size: 18px;
-      margin-top: 10px;
-      color: #00ffcc;
-    }
-    #notification {
-      color: #ffcc00;
-      margin-top: 20px;
-      font-weight: bold;
-    }
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cryzix Key System</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #111;
+            color: white;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            overflow: hidden;
+        }
+
+        .container {
+            text-align: center;
+            background-color: #222;
+            padding: 30px;
+            border-radius: 12px;
+            width: 90%;
+            max-width: 500px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5);
+            position: relative;
+        }
+
+        .title {
+            font-size: 30px;
+            margin-bottom: 20px;
+        }
+
+        .countdown {
+            font-size: 24px;
+            color: #ff4c4c;
+            margin-top: 20px;
+        }
+
+        .btn {
+            background-color: red;
+            color: white;
+            padding: 12px 24px;
+            border: none;
+            border-radius: 8px;
+            font-size: 18px;
+            cursor: pointer;
+            margin: 10px;
+            transition: background-color 0.3s ease;
+        }
+
+        .btn:disabled {
+            background-color: gray;
+            cursor: not-allowed;
+        }
+
+        .notification {
+            display: none;
+            color: #ff4c4c;
+            margin-top: 20px;
+        }
+
+        .btn-group {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        @media (max-width: 600px) {
+            .container {
+                padding: 15px;
+                width: 95%;
+            }
+            .title {
+                font-size: 24px;
+            }
+            .countdown {
+                font-size: 18px;
+            }
+        }
+    </style>
 </head>
 <body>
-  <h1>WHITELISTED</h1>
+    <div class="container">
+        <div class="title">Cryzix Key System</div>
+        <div class="countdown" id="countdown"></div>
+        <div class="btn-group">
+            <button class="btn" id="btn1" onclick="completeAction('btn1')">SUBSCRIBE TO CHANNEL</button>
+            <button class="btn" id="btn2" onclick="completeAction('btn2')">SUBSCRIBE TO CHANNEL</button>
+        </div>
+        <div class="notification" id="warningNotification">PLEASE DONT BYPASS IT TRY AGAIN</div>
+    </div>
 
-  <h2>Cryzix Key System</h2>
+    <script>
+        const countdownElem = document.getElementById('countdown');
+        const warningNotification = document.getElementById('warningNotification');
+        const btn1 = document.getElementById('btn1');
+        const btn2 = document.getElementById('btn2');
 
-  <button class="button" id="btn1" onclick="completeStep(1, 'https://www.youtube.com/@skibidipoplol')">SUBSCRIBE TO CHANNEL</button>
-  <button class="button" id="btn2" onclick="completeStep(2, 'https://www.youtube.com/@JosiahScripts')">SUBSCRIBE TO CHANNEL</button>
+        const keyExpirationTime = 48 * 60 * 60 * 1000; // 48 hours in milliseconds
+        let timeRemaining = keyExpirationTime;
+        let lastActionTime = 0;
+        let isBypassing = false;
 
-  <div class="key-box" id="keyBox" style="display:none;">
-    <h3>Your Key (valid for 2 days):</h3>
-    <p id="generatedKey">Loading...</p>
-    <div id="countdown">48:00:00</div>
-    <button class="button" onclick="copyKey()">Copy Key</button>
-  </div>
+        // Update the countdown every second
+        setInterval(function() {
+            if (timeRemaining > 0) {
+                timeRemaining -= 1000;
+                const hours = Math.floor(timeRemaining / (1000 * 60 * 60));
+                const minutes = Math.floor((timeRemaining % (1000 * 60 * 60)) / (1000 * 60));
+                const seconds = Math.floor((timeRemaining % (1000 * 60)) / 1000);
+                countdownElem.textContent = `Time Remaining: ${hours}H ${minutes}M ${seconds}S`;
+            } else {
+                countdownElem.textContent = "Key Expired";
+            }
+        }, 1000);
 
-  <div id="notification"></div>
+        // Handle the actions for button clicks
+        function completeAction(buttonId) {
+            const currentTime = new Date().getTime();
 
-  <script>
-    const keyBox = document.getElementById("keyBox");
-    const keyDisplay = document.getElementById("generatedKey");
-    const countdownEl = document.getElementById("countdown");
-    const notification = document.getElementById("notification");
+            if (currentTime - lastActionTime < 3000 && !isBypassing) {
+                // User tried to bypass by clicking too quickly
+                warningNotification.style.display = "block";
+                setTimeout(() => warningNotification.style.display = "none", 3000);
+                return;
+            }
 
-    let visibilityStart = null;
+            // Mark the button as completed
+            if (buttonId === 'btn1') {
+                btn1.disabled = true;
+            } else if (buttonId === 'btn2') {
+                btn2.disabled = true;
+            }
 
-    function generateKey() {
-      const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
-      let result = 'Cryzix-';
-      for (let i = 0; i < 12; i++) {
-        result += chars.charAt(Math.floor(Math.random() * chars.length));
-      }
-      return result;
-    }
+            // Enable the buttons after 3 seconds
+            setTimeout(() => {
+                btn1.style.backgroundColor = 'green';
+                btn2.style.backgroundColor = 'green';
+                btn1.disabled = false;
+                btn2.disabled = false;
+            }, 3000);
 
-    function completeStep(step, url) {
-      localStorage.setItem(`step${step}`, "done");
-      window.open(url, "_blank");
-      checkProgress();
-    }
-
-    function checkProgress() {
-      const step1 = localStorage.getItem("step1");
-      const step2 = localStorage.getItem("step2");
-      const savedKey = localStorage.getItem("cryzixKey");
-      const expire = localStorage.getItem("keyExpire");
-
-      if (step1) document.getElementById("btn1").classList.add("completed");
-      if (step2) document.getElementById("btn2").classList.add("completed");
-
-      if (step1 && step2) {
-        if (savedKey && expire && Date.now() < parseInt(expire)) {
-          keyDisplay.textContent = savedKey;
-        } else {
-          const key = generateKey();
-          const expireTime = Date.now() + 2 * 24 * 60 * 60 * 1000;
-          localStorage.setItem("cryzixKey", key);
-          localStorage.setItem("keyExpire", expireTime.toString());
-          keyDisplay.textContent = key;
+            lastActionTime = currentTime;
         }
-        keyBox.style.display = "block";
-        startCountdown();
-      }
-    }
-
-    function copyKey() {
-      const key = keyDisplay.textContent;
-      navigator.clipboard.writeText(key);
-      alert("Key copied to clipboard!");
-      localStorage.removeItem("step1");
-      localStorage.removeItem("step2");
-      localStorage.removeItem("cryzixKey");
-      localStorage.removeItem("keyExpire");
-    }
-
-    function startCountdown() {
-      const expire = parseInt(localStorage.getItem("keyExpire"));
-      const interval = setInterval(() => {
-        const now = Date.now();
-        const distance = expire - now;
-
-        if (distance <= 0) {
-          clearInterval(interval);
-          countdownEl.textContent = "00:00:00";
-          localStorage.removeItem("step1");
-          localStorage.removeItem("step2");
-          localStorage.removeItem("cryzixKey");
-          localStorage.removeItem("keyExpire");
-          keyBox.style.display = "none";
-          document.getElementById("btn1").classList.remove("completed");
-          document.getElementById("btn2").classList.remove("completed");
-          return;
-        }
-
-        const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-        const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
-        const seconds = Math.floor((distance % (1000 * 60)) / 1000);
-
-        countdownEl.textContent = `${String(hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
-      }, 1000);
-    }
-
-    document.addEventListener("visibilitychange", () => {
-      if (document.hidden) {
-        visibilityStart = Date.now();
-      } else {
-        const now = Date.now();
-        if (visibilityStart && (now - visibilityStart) < 3000) {
-          notification.textContent = "PLEASE DON'T BYPASS IT. TRY AGAIN.";
-          setTimeout(() => {
-            notification.textContent = "";
-          }, 5000);
-        }
-        visibilityStart = null;
-      }
-    });
-
-    window.onload = checkProgress;
-  </script>
+    </script>
 </body>
 </html>
